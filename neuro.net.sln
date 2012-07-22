@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo_2_CompoundLogic", "Dem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "neuro.net", "neuro.net\neuro.net.csproj", "{E7956E73-DBFD-4799-9B28-CAD3452457C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{EE8BD706-992D-446A-BCCE-724DB56238F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{701A9E94-7B61-4914-B769-0224C44BC953}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,16 @@ Global
 		{E7956E73-DBFD-4799-9B28-CAD3452457C9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E7956E73-DBFD-4799-9B28-CAD3452457C9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E7956E73-DBFD-4799-9B28-CAD3452457C9}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EE8BD706-992D-446A-BCCE-724DB56238F8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -97,7 +97,7 @@ namespace LogansFerry.NeuroDotNet
         /// Initializes a new instance of the <see cref="Neuron"/> class.
         /// </summary>
         /// <param name="activationFunction">The activation function.</param>
-        protected Neuron(IActivationFunction activationFunction)
+        public Neuron(IActivationFunction activationFunction)
         {
             // Initialize the class name for loggin purposes.
             this.Id = nextId++;
@@ -178,7 +178,7 @@ namespace LogansFerry.NeuroDotNet
         /// <value>
         /// The activation bias.
         /// </value>
-        protected double Bias
+        public double Bias
         {
             get
             {

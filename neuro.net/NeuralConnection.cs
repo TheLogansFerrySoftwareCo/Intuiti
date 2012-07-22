@@ -63,7 +63,7 @@ namespace LogansFerry.NeuroDotNet
         /// </summary>
         /// <param name="sourceNode">The source node.</param>
         /// <param name="targetNode">The target node.</param>
-        protected NeuralConnection(INeuralNode sourceNode, INeuralNode targetNode)
+        public NeuralConnection(INeuralNode sourceNode, INeuralNode targetNode)
         {
             // Initialize the class name that will appear in log files.
             this.name = sourceNode.Name + "->" + targetNode.Name;
