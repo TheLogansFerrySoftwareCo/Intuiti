@@ -105,6 +105,11 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "Ctor";
             Logger.TraceIn(this.name, MethodName);
 
+            if (activationFunction == null)
+            {
+                throw new ArgumentNullException("activationFunction");
+            }
+
             this.activationFunction = activationFunction;
             
             this.inboundConnections = new List<INeuralConnection>();
@@ -229,6 +234,11 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddInboundConnection";
             Logger.TraceIn(this.name, MethodName);
 
+            if (inboundConnection == null)
+            {
+                throw new ArgumentNullException("inboundConnection");
+            }
+
             this.inboundConnections.Add(inboundConnection);
 
             Logger.TraceOut(this.name, MethodName);
@@ -242,6 +252,11 @@ namespace LogansFerry.NeuroDotNet
         {
             const string MethodName = "AddOutboundConnection";
             Logger.TraceIn(this.name, MethodName);
+
+            if (outboundConnection == null)
+            {
+                throw new ArgumentNullException("outboundConnection");
+            }
 
             this.outboundConnections.Add(outboundConnection);
 
@@ -308,9 +323,9 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("inputs");
             }
 
-            if (inputs.Length % this.InputSize != 0)
+            if (inputs.Length <= 0)
             {
-                throw new InvalidOperationException("An uneven ratio exists between this network's inbound connections and input size.");
+                throw new ArgumentException("Input array cannot be zero-length.", "inputs");
             }
 
             // Sum the inputs and activate the neuron.

@@ -20,6 +20,8 @@
 
 namespace LogansFerry.NeuroDotNet.UnitTests
 {
+    using System;
+
     using Moq;
     using NUnit.Framework;
 
@@ -29,6 +31,19 @@ namespace LogansFerry.NeuroDotNet.UnitTests
     [TestFixture]
     public class NeuronTests
     {
+        /// <summary>
+        /// Method:     Constructor
+        /// Condition:  Null argument is provided.
+        /// Results:    Argument Null Exception
+        /// </summary>
+        [Test]
+        [ExpectedExceptionAttribute(typeof(ArgumentNullException))]
+        public void Ctor_ValidatesArgs()
+        {
+            // Verify
+            new Neuron(null);
+        }
+
         /// <summary>
         /// Property:   InputSize
         /// Condition:  Neuron is an input node.
@@ -146,6 +161,38 @@ namespace LogansFerry.NeuroDotNet.UnitTests
 
             // Verify
             Assert.AreEqual(neuron.Bias, expected);
+        }
+
+        /// <summary>
+        /// Method:     AddInboundConnection
+        /// Condition:  Null argument is provided.
+        /// Results:    Argument Null Exception
+        /// </summary>
+        [Test]
+        [ExpectedExceptionAttribute(typeof(ArgumentNullException))]
+        public void AddInboundConnection_ValidatesArgs()
+        {
+            // Setup
+            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            
+            // Execute/Verify
+            neuron.AddInboundConnection(null);
+        }
+
+        /// <summary>
+        /// Method:     AddOutboundConnection
+        /// Condition:  Null argument is provided.
+        /// Results:    Argument Null Exception
+        /// </summary>
+        [Test]
+        [ExpectedExceptionAttribute(typeof(ArgumentNullException))]
+        public void AddOutboundConnection_ValidatesArgs()
+        {
+            // Setup
+            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+
+            // Execute/Verify
+            neuron.AddOutboundConnection(null);
         }
 
         /// <summary>
@@ -268,6 +315,38 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockOutbound1.Verify(mock => mock.Fire(Output), Times.Once());
             mockOutbound2.Verify(mock => mock.Fire(Output), Times.Once());
             Assert.AreEqual(neuron.CachedOutputs[0], Output);
+        }
+
+        /// <summary>
+        /// Method:     Fire (double[])
+        /// Condition:  Null argument is provided.
+        /// Results:    Argument Null Exception
+        /// </summary>
+        [Test]
+        [ExpectedExceptionAttribute(typeof(ArgumentNullException))]
+        public void FireArray_ValidatesNullArgs()
+        {
+            // Setup
+            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+
+            // Execute/Verify
+            neuron.Fire(null);
+        }
+
+        /// <summary>
+        /// Method:     Fire (double[])
+        /// Condition:  Empty array is provided.
+        /// Results:    Argument Exception
+        /// </summary>
+        [Test]
+        [ExpectedExceptionAttribute(typeof(ArgumentException))]
+        public void FireArray_ValidatesEmptyArray()
+        {
+            // Setup
+            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+
+            // Execute/Verify
+            neuron.Fire(new double[0]);
         }
     }
 }
