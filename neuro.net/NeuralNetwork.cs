@@ -76,7 +76,7 @@ namespace LogansFerry.NeuroDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="NeuralNetwork"/> class.
         /// </summary>
-        protected NeuralNetwork()
+        public NeuralNetwork()
         {
             // Initialize the class name that will appear in log files.
             this.Id = nextId++;
@@ -145,6 +145,11 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddInboundConnection";
             Logger.TraceIn(this.name, MethodName);
 
+            if (inboundConnection == null)
+            {
+                throw new ArgumentNullException("inboundConnection");
+            }
+
             this.inboundConnections.Add(inboundConnection);
 
             Logger.TraceOut(this.name, MethodName);
@@ -158,6 +163,11 @@ namespace LogansFerry.NeuroDotNet
         {
             const string MethodName = "AddOutboundConnection";
             Logger.TraceIn(this.name, MethodName);
+
+            if (outboundConnection == null)
+            {
+                throw new ArgumentNullException("outboundConnection");
+            }
 
             this.outboundConnections.Add(outboundConnection);
 
@@ -185,7 +195,8 @@ namespace LogansFerry.NeuroDotNet
             if (this.inboundConnections.All(connection => connection.IsFired))
             {
                 var inputs = this.GetInputSignals();
-                var aggregatedInputs = this.AggregateValues(inputs, this.InputSize);
+                var digitizedInputs = this.DigitizeValues(inputs);  // Digitize the input signals for clarity.
+                var aggregatedInputs = this.AggregateValues(digitizedInputs, this.InputSize);
                 this.ComputeOutputs(aggregatedInputs);
 
                 // Propagate the computations of the higher-level network.
@@ -222,7 +233,8 @@ namespace LogansFerry.NeuroDotNet
             Logger.TraceIn(this.name, MethodName);
 
             var aggregatedInputs = this.AggregateValues(inputs, this.InputSize);
-            this.ComputeOutputs(aggregatedInputs);
+            var digitizedInputs = this.DigitizeValues(aggregatedInputs);
+            this.ComputeOutputs(digitizedInputs);
             this.FireOutputs();
 
             Logger.TraceOut(this.name, MethodName);
@@ -305,7 +317,7 @@ namespace LogansFerry.NeuroDotNet
         /// Adds a new input node to the network.
         /// </summary>
         /// <param name="node">The node.</param>
-        protected void AddInputNode(INeuralNode node)
+        public void AddInputNode(INeuralNode node)
         {
             const string MethodName = "AddInputNode";
             Logger.TraceIn(this.name, MethodName);
@@ -319,7 +331,7 @@ namespace LogansFerry.NeuroDotNet
         /// Adds a new output node to the network.
         /// </summary>
         /// <param name="node">The node.</param>
-        protected void AddOutputNode(INeuralNode node)
+        public void AddOutputNode(INeuralNode node)
         {
             const string MethodName = "AddOutputNode";
             Logger.TraceIn(this.name, MethodName);
@@ -378,6 +390,25 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
+        /// Digitizes the values by converting all positive number to 1.0 and all other numbers to -1.0.
+        /// </summary>
+        /// <param name="values">The values to digitize.</param>
+        /// <returns>
+        /// The list of digitized values.
+        /// </returns>
+        protected double[] DigitizeValues(double[] values)
+        {
+            var digitizedValues = new double[values.Length];
+
+            for (var index = 0; index < values.Length; index++)
+            {
+                digitizedValues[index] = values[index] > 0 ? 1.0d : -1.0d;
+            }
+
+            return digitizedValues;
+        }
+
+        /// <summary>
         /// Gets the input signals that are being fired from the network's inbound connections.
         /// </summary>
         /// <returns>
@@ -392,8 +423,8 @@ namespace LogansFerry.NeuroDotNet
 
             for (var inboundIndex = 0; inboundIndex < this.inboundConnections.Count; inboundIndex++)
             {
-                // Read each input signal.  Digitize for clarity by converting all negative signals to a -1 and all positive signals to a 1.
-                inputSignals[inboundIndex] = this.inboundConnections[inboundIndex].Output >= 0 ? 1.0 : -1.0;
+                // Read each input signal.
+                inputSignals[inboundIndex] = this.inboundConnections[inboundIndex].Output;
                 Logger.Debug(this.name, MethodName, "inputSignals", inputSignals);
 
                 // Clear the signal.
@@ -426,7 +457,8 @@ namespace LogansFerry.NeuroDotNet
 
             var outputRatio = this.outboundConnections.Count / this.CachedOutputs.Length;
             var connectionIndex = 0;
-            foreach (var digitizedOutput in this.CachedOutputs.Select(output => output >= 0 ? 1.0 : -1.0))
+            var digitizedOutputs = this.DigitizeValues(this.CachedOutputs);  // Digitize the output signals for clarity.
+            foreach (var digitizedOutput in digitizedOutputs)
             {
                 for (var counter = 0; counter < outputRatio; counter++)
                 {

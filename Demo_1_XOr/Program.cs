@@ -113,7 +113,7 @@ namespace Demo_1_XOr
         private static ISupervisedLearnerNetwork ConstructNetwork()
         {
             // Create a backpropagation network for supervised learning.
-            var network = new BackpropagationNetwork();
+            var network = new BackpropagationNetwork(new RmsCalculator());
 
             // Use two activation functions.
             // Linear will be used for the input nodes.

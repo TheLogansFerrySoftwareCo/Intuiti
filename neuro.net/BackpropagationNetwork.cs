@@ -35,6 +35,11 @@ namespace LogansFerry.NeuroDotNet
         private const string ClassName = "BackpropagationNetwork";
 
         /// <summary>
+        /// A utility for calculating the network's error rate.
+        /// </summary>
+        private readonly IErrorCalculator errorCalculator;
+
+        /// <summary>
         /// A listing of the network's inbound connections.
         /// </summary>
         private readonly List<ISupervisedLearnerConnection> inboundConnections;
@@ -62,12 +67,15 @@ namespace LogansFerry.NeuroDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="BackpropagationNetwork"/> class.
         /// </summary>
-        public BackpropagationNetwork()
+        /// <param name="errorCalculator">The error calculator.</param>
+        public BackpropagationNetwork(IErrorCalculator errorCalculator)
         {
             // Initialize the class name that will appear in log files.
             this.name = ClassName + "_" + this.Id;
             const string MethodName = "ctor";
             Logger.TraceIn(this.name, MethodName);
+
+            this.errorCalculator = errorCalculator;
 
             this.inboundConnections = new List<ISupervisedLearnerConnection>();
             this.outboundConnections = new List<ISupervisedLearnerConnection>();
@@ -134,7 +142,8 @@ namespace LogansFerry.NeuroDotNet
                 // These aggregated error signals will be used as the ideal outputs for correcting the cached outputs.
                 var reportedErrorSignals = this.GetReportedErrorSignals();
                 Logger.Debug(this.name, MethodName, "reportedErrorSignals", reportedErrorSignals);
-                var aggregatedErrorSignals = this.AggregateValues(reportedErrorSignals, this.CachedOutputs.Length);
+                var digitizedErrorSignals = this.DigitizeValues(reportedErrorSignals);
+                var aggregatedErrorSignals = this.AggregateValues(digitizedErrorSignals, this.CachedOutputs.Length);
                 Logger.Debug(this.name, MethodName, "aggregatedErrorSignals", aggregatedErrorSignals);
 
                 // Calculate this network's overall error by comparing the cached outputs to the "ideal" outputs.
@@ -239,7 +248,10 @@ namespace LogansFerry.NeuroDotNet
         /// <param name="momentum">The momentum that will be used.</param>
         /// <param name="trainingData">The training data set that will be used to compute outputs.</param>
         /// <param name="idealOutputs">The ideal outputs that corelate to the training data and that will be used to correct the network.</param>
-        public void Train(long numEpochs, float learningRate, float momentum, double[][] trainingData, double[][] idealOutputs)
+        /// <returns>
+        /// The error rate from the most recent training epoch.
+        /// </returns>
+        public double Train(long numEpochs, float learningRate, float momentum, double[][] trainingData, double[][] idealOutputs)
         {
             const string MethodName = "Train";
             Logger.TraceIn(this.name, MethodName);
@@ -248,6 +260,8 @@ namespace LogansFerry.NeuroDotNet
             for (var epochIndex = 0; epochIndex < numEpochs; epochIndex++)
             {
                 Logger.Debug(this.name, MethodName, "epochIndex", epochIndex);
+
+                this.errorCalculator.Reset();
 
                 // Use each training set once per epoch...
                 for (var trainingSetIndex = 0; trainingSetIndex < trainingData.Length; trainingSetIndex++)
@@ -261,6 +275,7 @@ namespace LogansFerry.NeuroDotNet
                     Logger.Debug(this.name, MethodName, "actualOutputs", actualOutputs);
                     Logger.Debug(this.name, MethodName, "idealOutputs", idealOutputs[trainingSetIndex]);
                     var errorSignals = this.GetOverallErrorSignals(actualOutputs, idealOutputs[trainingSetIndex]);
+                    this.errorCalculator.AddToErrorCalc(errorSignals);
                     Logger.Debug(this.name, MethodName, "errorSignals", errorSignals);
 
                     // Backpropagate the calculated error signals through the network.
@@ -275,6 +290,8 @@ namespace LogansFerry.NeuroDotNet
             }
 
             Logger.TraceOut(this.name, MethodName);
+
+            return this.errorCalculator.Calculate();
         }
 
         /// <summary>
@@ -292,8 +309,8 @@ namespace LogansFerry.NeuroDotNet
 
             for (var outboundIndex = 0; outboundIndex < this.outboundConnections.Count; outboundIndex++)
             {
-                // Read each error signal.  Digitize for clarity by converting all negative signals to a -1 and all positive signals to a 1.
-                reportedErrorSignals[outboundIndex] = this.outboundConnections[outboundIndex].ErrorSignal >= 0 ? 1.0 : -1.0;
+                // Read each error signal.
+                reportedErrorSignals[outboundIndex] = this.outboundConnections[outboundIndex].ErrorSignal;
                 Logger.Debug(this.name, MethodName, "reportedErrorSignals", reportedErrorSignals);
 
                 // Clear the signal.

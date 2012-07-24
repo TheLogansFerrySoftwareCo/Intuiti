@@ -111,7 +111,10 @@ namespace Demo_2_ComplexLogic
             }
 
             // Train the network on the truth table.
-            network.Train(2000, 0.01f, 0.0f, inputs, idealOutputs);
+            for (var index = 0; index < 10; index++)
+            {
+                Console.WriteLine(index + ") Error Rate=" + network.Train(1000, 0.01f, 0.0f, inputs, idealOutputs));
+            }
 
             //// Display the network's answers now that it has studied the truth table.
 
@@ -148,7 +151,7 @@ namespace Demo_2_ComplexLogic
             var sigmoidFunction = new HyperbolicTangentFunction();
 
             // Create a backpropagation network for supervised learning.
-            var nestedNetwork = new BackpropagationNetwork();
+            var nestedNetwork = new BackpropagationNetwork(new RmsCalculator());
             
             // INPUT LAYER:  2 Sub-networks
             // (Each of these sub-networks are used to "associate" the two pairs of inputs which
@@ -200,7 +203,7 @@ namespace Demo_2_ComplexLogic
         private static ISupervisedLearnerNetwork ConstructSubnetwork()
         {
             // Create a backpropagation network for supervised learning.
-            var network = new BackpropagationNetwork();
+            var network = new BackpropagationNetwork(new RmsCalculator());
 
             // Use two activation functions.
             // Linear will be used for the input nodes.

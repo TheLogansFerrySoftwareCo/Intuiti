@@ -33,6 +33,9 @@ namespace LogansFerry.NeuroDotNet
         /// <param name="momentum">The momentum that will be used.</param>
         /// <param name="trainingData">The training data set that will be used to compute outputs.</param>
         /// <param name="idealOutputs">The ideal outputs that corelate to the training data and that will be used to correct the network.</param>
-        void Train(long numEpochs, float learningRate, float momentum, double[][] trainingData, double[][] idealOutputs);
+        /// <returns>
+        /// The error rate from the most recent training epoch.
+        /// </returns>
+        double Train(long numEpochs, float learningRate, float momentum, double[][] trainingData, double[][] idealOutputs);
     }
 }

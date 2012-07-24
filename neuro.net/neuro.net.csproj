@@ -49,6 +49,7 @@
     <Compile Include="BackpropagationNeuron.cs" />
     <Compile Include="HyperbolicTangentFunction.cs" />
     <Compile Include="IActivationFunction.cs" />
+    <Compile Include="IErrorCalculator.cs" />
     <Compile Include="INeuralConnection.cs" />
     <Compile Include="INeuralNetwork.cs" />
     <Compile Include="INeuralNode.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Neuron.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BackpropagationConnection.cs" />
+    <Compile Include="RmsCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExternalReferences\log4net\log4net.dll" />
