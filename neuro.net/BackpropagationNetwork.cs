@@ -138,17 +138,17 @@ namespace LogansFerry.NeuroDotNet
             // can perform internal backpropagation training.
             if (this.outboundConnections.All(connection => connection.IsReportingError))
             {
-                // Retrieve the reported eror signals and aggregate them to match the number of cached output values.
-                // These aggregated error signals will be used as the ideal outputs for correcting the cached outputs.
+                // Retrieve the reported eror signals and allocate them to match the number of cached output values.
+                // These allocated error signals will be used as the ideal outputs for correcting the cached outputs.
                 var reportedErrorSignals = this.GetReportedErrorSignals();
                 Logger.Debug(this.name, MethodName, "reportedErrorSignals", reportedErrorSignals);
                 var digitizedErrorSignals = this.DigitizeValues(reportedErrorSignals);
-                var aggregatedErrorSignals = this.AggregateValues(digitizedErrorSignals, this.CachedOutputs.Length);
-                Logger.Debug(this.name, MethodName, "aggregatedErrorSignals", aggregatedErrorSignals);
+                var allocatedErrorSignals = this.AllocateValues(digitizedErrorSignals, this.CachedOutputs.Length);
+                Logger.Debug(this.name, MethodName, "aggregatedErrorSignals", allocatedErrorSignals);
 
                 // Calculate this network's overall error by comparing the cached outputs to the "ideal" outputs.
                 // Then backpropagate the error signals through this network and back to the outer network.
-                var overallErrorSignals = this.GetOverallErrorSignals(this.CachedOutputs, aggregatedErrorSignals);
+                var overallErrorSignals = this.GetOverallErrorSignals(this.CachedOutputs, allocatedErrorSignals);
                 Logger.Debug(this.name, MethodName, "overallErrorSignals", overallErrorSignals);
                 this.BackpropagateErrorSignals(overallErrorSignals);
             }

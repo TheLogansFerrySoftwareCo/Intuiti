@@ -196,7 +196,7 @@ namespace LogansFerry.NeuroDotNet
             {
                 var inputs = this.GetInputSignals();
                 var digitizedInputs = this.DigitizeValues(inputs);  // Digitize the input signals for clarity.
-                var aggregatedInputs = this.AggregateValues(digitizedInputs, this.InputSize);
+                var aggregatedInputs = this.AllocateValues(digitizedInputs, this.InputSize);
                 this.ComputeOutputs(aggregatedInputs);
 
                 // Propagate the computations of the higher-level network.
@@ -222,8 +222,8 @@ namespace LogansFerry.NeuroDotNet
         /// <para>
         /// This method operates in a similar manner as its counter-part, with the exception that it
         /// receives all inputs at once and so does not need to wait for all inputs to be ready.  Therefore,
-        /// it will immediately process the provided inputs by aggregating them into the correct number of
-        /// values to match its input nodes, using the aggregated inputs to calculate outputs, and propagating
+        /// it will immediately process the provided inputs by allocating them into the correct number of
+        /// values to match its input nodes, using the allocated inputs to calculate outputs, and propagating
         /// the calculated outputs to the outbound connections.
         /// </para>
         /// </remarks>
@@ -232,8 +232,8 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "Fire(double[])";
             Logger.TraceIn(this.name, MethodName);
 
-            var aggregatedInputs = this.AggregateValues(inputs, this.InputSize);
-            var digitizedInputs = this.DigitizeValues(aggregatedInputs);
+            var allocatedInputs = this.AllocateValues(inputs, this.InputSize);
+            var digitizedInputs = this.DigitizeValues(allocatedInputs);
             this.ComputeOutputs(digitizedInputs);
             this.FireOutputs();
 
@@ -257,9 +257,9 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("inputs");
             }
 
-            if (inputs.Length % this.InputSize != 0)
+            if (inputs.Length != this.InputSize)
             {
-                throw new InvalidOperationException("An uneven ratio exists between this network's inbound connections and input size.");
+                throw new InvalidOperationException("The number of inputs does not match the network's Input Size.  Num Inputs: " + inputs.Length + "; Expected: " + this.InputSize);
             }
 
             Logger.Debug(this.name, MethodName, "inputs", inputs);
@@ -342,6 +342,43 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
+        /// Converts the provided array into a new array of the specified size by either aggregating or distibuting values as appropriate.
+        /// </summary>
+        /// <param name="values">The values to allocate.</param>
+        /// <param name="numAllocations">The number of allocations.</param>
+        /// <returns>
+        /// A new array of the specified size.
+        /// </returns>
+        protected double[] AllocateValues(IList<double> values, int numAllocations)
+        {
+            if (values.Count >= numAllocations)
+            {
+                return this.AggregateValues(values, numAllocations);
+            }
+
+            return this.DistributeValues(values, numAllocations);
+        }
+
+        /// <summary>
+        /// Digitizes the values by converting all positive number to 1.0 and all other numbers to -1.0.
+        /// </summary>
+        /// <param name="values">The values to digitize.</param>
+        /// <returns>
+        /// The list of digitized values.
+        /// </returns>
+        protected double[] DigitizeValues(double[] values)
+        {
+            var digitizedValues = new double[values.Length];
+
+            for (var index = 0; index < values.Length; index++)
+            {
+                digitizedValues[index] = values[index] > 0 ? 1.0d : -1.0d;
+            }
+
+            return digitizedValues;
+        }
+
+        /// <summary>
         /// Aggregates the provided values into the specified number of aggregations.
         /// </summary>
         /// <param name="values">The values to aggregate.</param>
@@ -362,7 +399,7 @@ namespace LogansFerry.NeuroDotNet
         /// </code>
         ///  </para>
         /// </remarks>
-        protected double[] AggregateValues(IList<double> values, int numAggregations)
+        private double[] AggregateValues(IList<double> values, int numAggregations)
         {
             const string MethodName = "AggregateValues";
             Logger.TraceIn(this.name, MethodName);
@@ -370,6 +407,7 @@ namespace LogansFerry.NeuroDotNet
             var aggregatedValues = new double[numAggregations];
 
             var valueIndex = 0;
+
             var ratio = values.Count / numAggregations;
 
             for (var aggregatedIndex = 0; aggregatedIndex < numAggregations; aggregatedIndex++)
@@ -379,6 +417,11 @@ namespace LogansFerry.NeuroDotNet
                 {
                     sum += values[valueIndex];
                     valueIndex++;
+
+                    if (valueIndex >= values.Count)
+                    {
+                        valueIndex = 0;
+                    }
                 }
 
                 aggregatedValues[aggregatedIndex] = sum;
@@ -390,22 +433,58 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
-        /// Digitizes the values by converting all positive number to 1.0 and all other numbers to -1.0.
+        /// Distributes the provided list of values across the specified number of fields.
         /// </summary>
-        /// <param name="values">The values to digitize.</param>
+        /// <param name="values">The values to distribute.</param>
+        /// <param name="numDistributions">The number of distributions.</param>
         /// <returns>
-        /// The list of digitized values.
+        /// An array of distributed values.
         /// </returns>
-        protected double[] DigitizeValues(double[] values)
+        /// <remarks>
+        /// <para>
+        /// This method is used to expand an array of values into a larger array of values
+        /// by copying and repeating elements from the smaller array in such a way that increases the number of elements. This is
+        /// useful for distributing values reported from a smaller number of outer connections into a larger number of
+        /// receiving nodes.
+        /// </para>
+        /// <para>
+        /// For example, suppose an array of 3 elements needs to be distributed across an array of 5 elements. It might look like:
+        /// <code>
+        /// original = { 11, 22, 33 }
+        /// new = { 11, 11, 22, 22, 33 }
+        /// </code>
+        ///  </para>
+        /// </remarks>
+        private double[] DistributeValues(IList<double> values, int numDistributions)
         {
-            var digitizedValues = new double[values.Length];
+            const string MethodName = "DistributeValues";
+            Logger.TraceIn(this.name, MethodName);
 
-            for (var index = 0; index < values.Length; index++)
+            var distributedValues = new double[numDistributions];
+
+            var ratio = numDistributions / values.Count;
+            var excess = numDistributions % values.Count;
+
+            var distributedValuesIndex = 0;
+
+            for (var valueIndex = 0; valueIndex < values.Count; valueIndex++)
             {
-                digitizedValues[index] = values[index] > 0 ? 1.0d : -1.0d;
+                for (var ratioCount = 0; ratioCount < ratio; ratioCount++)
+                {
+                    distributedValues[distributedValuesIndex] = values[valueIndex];
+                    distributedValuesIndex++;
+                }
+                
+                if (valueIndex < excess)
+                {
+                    distributedValues[distributedValuesIndex] = values[valueIndex];
+                    distributedValuesIndex++;
+                }
             }
+            
+            Logger.TraceOut(this.name, MethodName);
 
-            return digitizedValues;
+            return distributedValues;
         }
 
         /// <summary>
