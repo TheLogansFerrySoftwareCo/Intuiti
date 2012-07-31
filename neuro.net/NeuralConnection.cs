@@ -33,17 +33,6 @@ namespace LogansFerry.NeuroDotNet
     public class NeuralConnection : INeuralConnection
     {
         /// <summary>
-        /// The random number utility that will be used to generate connection weights.
-        /// </summary>
-        /// <remarks>
-        /// This is a static member so that it is only seeded once, thus ensuring a different
-        /// number for each assignment.  Otherwise, connection objects that are instantiated
-        /// too quickly in sequence would receive the same time-based seed value, which would
-        /// result in them having the same "random" weight assignment.
-        /// </remarks>
-        private static readonly Random Randomizer = new Random();
-
-        /// <summary>
         /// The source node for this connection.  This is the node that will fire a signal over the connection.
         /// </summary>
         private readonly INeuralNode sourceNode;
@@ -61,17 +50,27 @@ namespace LogansFerry.NeuroDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="NeuralConnection"/> class.
         /// </summary>
+        /// <param name="initialWeight">The connection's initial weight value.</param>
         /// <param name="sourceNode">The source node.</param>
         /// <param name="targetNode">The target node.</param>
-        public NeuralConnection(INeuralNode sourceNode, INeuralNode targetNode)
+        public NeuralConnection(double initialWeight, INeuralNode sourceNode, INeuralNode targetNode)
         {
+            if (sourceNode == null)
+            {
+                throw new ArgumentNullException("sourceNode");
+            }
+
+            if (targetNode == null)
+            {
+                throw new ArgumentNullException("targetNode");
+            }
+
             // Initialize the class name that will appear in log files.
             this.name = sourceNode.Name + "->" + targetNode.Name;
             const string MethodName = "ctor";
             Logger.TraceIn(this.name, MethodName);
 
-            this.Initialize();
-
+            this.Weight = initialWeight;
             this.sourceNode = sourceNode;
             this.targetNode = targetNode;
             
@@ -110,7 +109,7 @@ namespace LogansFerry.NeuroDotNet
         /// <value>
         /// The source node.
         /// </value>
-        protected INeuralNode SourceNode
+        public INeuralNode SourceNode
         {
             get
             {
@@ -124,7 +123,7 @@ namespace LogansFerry.NeuroDotNet
         /// <value>
         /// The target node.
         /// </value>
-        protected INeuralNode TargetNode
+        public INeuralNode TargetNode
         {
             get
             {
@@ -138,12 +137,12 @@ namespace LogansFerry.NeuroDotNet
         /// <value>
         /// The weight value.
         /// </value>
-        protected double Weight { get; set; }
+        public double Weight { get; protected set; }
 
         /// <summary>
         /// Gets the cached input, which is the value that was provided by the source node the last time that it fired.
         /// </summary>
-        protected double CachedInput { get; private set; }
+        public double CachedInput { get; private set; }
 
         /// <summary>
         /// Fires the connection with the provided input.
@@ -181,24 +180,6 @@ namespace LogansFerry.NeuroDotNet
             Logger.TraceIn(this.name, MethodName);
 
             this.IsFired = false;
-
-            Logger.TraceOut(this.name, MethodName);
-        }
-
-        /// <summary>
-        /// Initializes the connection by randomly assigning a weight and clearing all cached values.
-        /// </summary>
-        private void Initialize()
-        {
-            const string MethodName = "Initialize";
-            Logger.TraceIn(this.name, MethodName);
-
-            // Weights will be values between -1 and 1.
-            const double Max = 1.0d;
-            const double Min = -1.0d;
-
-            this.Weight = (Randomizer.NextDouble() * (Max - Min)) + Min;
-            Logger.Debug(this.name, MethodName, "Weight", this.Weight);
 
             Logger.TraceOut(this.name, MethodName);
         }

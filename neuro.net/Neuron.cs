@@ -287,6 +287,13 @@ namespace LogansFerry.NeuroDotNet
             if (this.inboundConnections.All(connection => connection.IsFired))
             {
                 this.Activate();
+
+                // Clear the input signal and inbound connections
+                this.pendingInputSignal = 0.0d;
+                foreach (var connection in this.inboundConnections)
+                {
+                    connection.ClearFire();
+                }
             }
             else
             {
@@ -353,13 +360,6 @@ namespace LogansFerry.NeuroDotNet
 
             // Cache the output.
             this.cachedOutput[0] = output;
-
-            // Clear the input signal and inbound connections
-            this.pendingInputSignal = 0.0d;
-            foreach (var connection in this.inboundConnections)
-            {
-                connection.ClearFire();
-            }
 
             // Fire each of the outbound connections with the output signal.
             foreach (var connection in this.outboundConnections)

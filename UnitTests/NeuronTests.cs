@@ -244,6 +244,8 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             // The fire signals were checked but no activation activities occurred.
             mockInboundFired.Verify(mock => mock.IsFired, Times.Exactly(1));
             mockInboundUnfired.Verify(mock => mock.IsFired, Times.Exactly(1));
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Never());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Never());
             mockOutbound1.Verify(mock => mock.Fire(It.IsAny<double>()), Times.Never());
             mockOutbound2.Verify(mock => mock.Fire(It.IsAny<double>()), Times.Never());
             mockFunction.Verify(mock => mock.Invoke(It.IsAny<float>()), Times.Never());
@@ -263,6 +265,8 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockFunction.Verify(mock => mock.Invoke(BiasPlusInputs), Times.Once());
             mockOutbound1.Verify(mock => mock.Fire(Output), Times.Once());
             mockOutbound2.Verify(mock => mock.Fire(Output), Times.Once());
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Once());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Once());
             Assert.AreEqual(neuron.CachedOutputs[0], Output);
         }
 
@@ -308,9 +312,12 @@ namespace LogansFerry.NeuroDotNet.UnitTests
 
             // VERIFICATION
 
-            // The fire signals were NOt checked and activation activities occurred.
+            // The fire signals were Not checked and activation activities occurred.
             mockInbound1.Verify(mock => mock.IsFired, Times.Never());
             mockInbound2.Verify(mock => mock.IsFired, Times.Never());
+            mockInbound1.Verify(mock => mock.ClearFire(), Times.Never());
+            mockInbound2.Verify(mock => mock.ClearFire(), Times.Never());
+            
             mockFunction.Verify(mock => mock.Invoke(BiasPlusInputs), Times.Once());
             mockOutbound1.Verify(mock => mock.Fire(Output), Times.Once());
             mockOutbound2.Verify(mock => mock.Fire(Output), Times.Once());

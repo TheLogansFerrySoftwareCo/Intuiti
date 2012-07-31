@@ -43,10 +43,11 @@ namespace LogansFerry.NeuroDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="BackpropagationConnection"/> class.
         /// </summary>
+        /// <param name="initialWeight">The connection's initial weight.</param>
         /// <param name="sourceNode">The source node.</param>
         /// <param name="targetNode">The target node.</param>
-        public BackpropagationConnection(ISupervisedLearnerNode sourceNode, ISupervisedLearnerNode targetNode)
-            : base(sourceNode, targetNode)
+        public BackpropagationConnection(double initialWeight, ISupervisedLearnerNode sourceNode, ISupervisedLearnerNode targetNode)
+            : base(initialWeight, sourceNode, targetNode)
         {
             // Initialize the class name that will appear in log files.
             this.name = sourceNode.Name + "->" + targetNode.Name;

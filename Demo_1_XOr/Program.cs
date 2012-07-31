@@ -32,6 +32,11 @@ namespace Demo_1_XOr
     public static class Program
     {
         /// <summary>
+        /// The random number utility that will be used to generate weights.
+        /// </summary>
+        private static readonly Random Randomizer = new Random();
+
+        /// <summary>
         /// The main method.
         /// </summary>
         public static void Main()
@@ -142,19 +147,34 @@ namespace Demo_1_XOr
             // Manually wire the input layer to the hidden layer.  Notice that we'll connect every
             // input neuron to every output neuron in order to create a proper feedforward network.
             // If we wanted a different structure, we would use a different wiring pattern.
-            new BackpropagationConnection(inputNeuron1, hiddenNeuron1);
-            new BackpropagationConnection(inputNeuron1, hiddenNeuron2);
-            new BackpropagationConnection(inputNeuron1, hiddenNeuron3);
-            new BackpropagationConnection(inputNeuron2, hiddenNeuron1);
-            new BackpropagationConnection(inputNeuron2, hiddenNeuron2);
-            new BackpropagationConnection(inputNeuron2, hiddenNeuron3);
+            new BackpropagationConnection(GetNextRandomWeight(), inputNeuron1, hiddenNeuron1);
+            new BackpropagationConnection(GetNextRandomWeight(), inputNeuron1, hiddenNeuron2);
+            new BackpropagationConnection(GetNextRandomWeight(), inputNeuron1, hiddenNeuron3);
+            new BackpropagationConnection(GetNextRandomWeight(), inputNeuron2, hiddenNeuron1);
+            new BackpropagationConnection(GetNextRandomWeight(), inputNeuron2, hiddenNeuron2);
+            new BackpropagationConnection(GetNextRandomWeight(), inputNeuron2, hiddenNeuron3);
 
             // Manually wire the hidden layer to the output layer.
-            new BackpropagationConnection(hiddenNeuron1, outputNeuron);
-            new BackpropagationConnection(hiddenNeuron2, outputNeuron);
-            new BackpropagationConnection(hiddenNeuron3, outputNeuron);
+            new BackpropagationConnection(GetNextRandomWeight(), hiddenNeuron1, outputNeuron);
+            new BackpropagationConnection(GetNextRandomWeight(), hiddenNeuron2, outputNeuron);
+            new BackpropagationConnection(GetNextRandomWeight(), hiddenNeuron3, outputNeuron);
             
             return network;
+        }
+
+        /// <summary>
+        /// Returns a new random number within the configured weight range.
+        /// </summary>
+        /// <returns>
+        /// The next weight value.
+        /// </returns>
+        private static double GetNextRandomWeight()
+        {
+            // Weights will be values between -1 and 1.
+            const double Max = 1.0d;
+            const double Min = -1.0d;
+
+            return (Randomizer.NextDouble() * (Max - Min)) + Min;
         }
     }
 }

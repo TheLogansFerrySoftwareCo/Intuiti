@@ -199,11 +199,13 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockOutputNode2.Verify(mock => mock.CachedOutputs, Times.Never());
             mockOutbound1.Verify(mock => mock.Fire(It.IsAny<double>()), Times.Never());
             mockOutbound2.Verify(mock => mock.Fire(It.IsAny<double>()), Times.Never());
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Never());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Never());
             Assert.AreEqual(initialOutput, network.CachedOutputs);
         }
 
         /// <summary>
-        /// Method:         Fire (double)
+        /// Method:         Fire
         /// Requirements:   1) The Fire method will cause the network to fire/activate after the final inbound connection fired.
         ///                 2) Activation causes network to initiate internal computations.
         ///                 3) Internal computations are propogated forward to outbound connections.
@@ -285,6 +287,8 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockOutputNode2.Verify(mock => mock.CachedOutputs, Times.AtLeastOnce());
             mockOutbound1.Verify(mock => mock.Fire(DigitizedOutput1), Times.Once());
             mockOutbound2.Verify(mock => mock.Fire(DigitizedOutput2), Times.Once());
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Once());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Once());
             Assert.AreEqual(outputs, network.CachedOutputs);
         }
 
@@ -355,7 +359,9 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             // The inbound connections were not used...
             mockInboundFired.Verify(mock => mock.IsFired, Times.Never());
             mockInboundUnfired.Verify(mock => mock.IsFired, Times.Never());
-
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Never());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Never());
+            
             // ...and the activation activities occurred.
             mockInputNode1.Verify(mock => mock.Fire(new[] { DigitizedInput1 }), Times.Once());
             mockInputNode2.Verify(mock => mock.Fire(new[] { DigitizedInput2 }), Times.Once());
@@ -370,6 +376,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         /// Method:         Fire(double[])
         /// Requirement:    Method can accept an input array with more inputs than the input layer size by aggregating values.
         /// </summary>
+        [Test]
         public void FireArray_AcceptsNumInputsGreaterThanExpected()
         {
             const double Input1 = -2.3d;
@@ -426,7 +433,9 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             // The inbound connections were not used...
             mockInboundFired.Verify(mock => mock.IsFired, Times.Never());
             mockInboundUnfired.Verify(mock => mock.IsFired, Times.Never());
-
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Never());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Never());
+            
             // ...and the activation activities occurred.
             mockInputNode.Verify(mock => mock.Fire(new[] { DigitizedInput }), Times.Once());
             mockOutputNode1.Verify(mock => mock.CachedOutputs, Times.AtLeastOnce());
@@ -501,7 +510,9 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             // The inbound connections were not used...
             mockInboundFired.Verify(mock => mock.IsFired, Times.Never());
             mockInboundUnfired.Verify(mock => mock.IsFired, Times.Never());
-
+            mockInboundFired.Verify(mock => mock.ClearFire(), Times.Never());
+            mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Never());
+            
             // ...and the activation activities occurred.
 
             // Inputs were distributed across input nodes, repeating as necessary.
