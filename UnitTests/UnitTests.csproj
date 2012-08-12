@@ -53,6 +53,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackpropagationNeuronTests.cs" />
+    <Compile Include="HyperbolicTangentTests.cs" />
+    <Compile Include="LinearActivationTests.cs" />
     <Compile Include="NeuralConnectionTests.cs" />
     <Compile Include="NeuralNetworkTests.cs" />
     <Compile Include="NeuronTests.cs" />

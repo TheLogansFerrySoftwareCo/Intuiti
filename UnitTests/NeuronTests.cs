@@ -41,7 +41,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void Ctor_ValidatesArgs()
         {
             // Verify
-            new Neuron(null);
+            new Neuron(0.0d, null);
         }
 
         /// <summary>
@@ -53,12 +53,12 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void InputSize_InputNodesReturnOne()
         {
             // Setup: create an input neuron with 2 outbound and 0 inbound connections.
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
 
             // Verify
-            Assert.AreEqual(neuron.InputSize, 1);
+            Assert.AreEqual(1, neuron.InputSize);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void InputSize_BasedOnInboundConnections()
         {
             // Setup:  create a hidden neuron with 3 inbound and 2 outbound connections.
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
 
@@ -79,7 +79,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             neuron.AddInboundConnection(new Mock<INeuralConnection>().Object);
 
             // Verify
-            Assert.AreEqual(neuron.InputSize, 3);
+            Assert.AreEqual(3, neuron.InputSize);
         }
 
         /// <summary>
@@ -91,12 +91,12 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void OutputSize_InputNodesReturnOne()
         {
             // Setup: create an input neuron with 2 outbound and 0 inbound connections.
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
 
             // Verify
-            Assert.AreEqual(neuron.OutputSize, 1);
+            Assert.AreEqual(1, neuron.OutputSize);
         }
 
         /// <summary>
@@ -108,12 +108,12 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void OutputSize_OutputNodesReturnOne()
         {
             // Setup: create an output neuron with 2 inbound and 0 outbound connections.
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
             neuron.AddInboundConnection(new Mock<INeuralConnection>().Object);
             neuron.AddInboundConnection(new Mock<INeuralConnection>().Object);
 
             // Verify
-            Assert.AreEqual(neuron.OutputSize, 1);
+            Assert.AreEqual(1, neuron.OutputSize);
         }
 
         /// <summary>
@@ -125,17 +125,17 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void Bias_InputNodesReturnZero()
         {
             // Setup: create an input neuron with 1 outbound and 0 inbound connections.
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(-1.0d, new Mock<IActivationFunction>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
             
             // Verify Initialization
-            Assert.AreEqual(neuron.Bias, 0.0d);
+            Assert.AreEqual(0.0d, neuron.Bias);
 
             // Execute
             neuron.Bias = 1.0d;
 
             // Verify no update
-            Assert.AreEqual(neuron.Bias, 0.0d);
+            Assert.AreEqual(0.0d, neuron.Bias);
         }
 
         /// <summary>
@@ -147,12 +147,12 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void Bias_NonInputNodesHaveBias()
         {
             // Setup: create a neuron with 1 outbound and 1 inbound connections.
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(-1.0d, new Mock<IActivationFunction>().Object);
             neuron.AddInboundConnection(new Mock<INeuralConnection>().Object);
             neuron.AddOutboundConnection(new Mock<INeuralConnection>().Object);
 
             // Verify Initialization is not zero.
-            Assert.AreNotEqual(neuron.Bias, 0.0d);
+            Assert.AreEqual(-1.0d, neuron.Bias);
             
             // Execute
             var initialBias = neuron.Bias;
@@ -160,7 +160,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             var expected = initialBias + 1.0d;
 
             // Verify
-            Assert.AreEqual(neuron.Bias, expected);
+            Assert.AreEqual(expected, neuron.Bias);
         }
 
         /// <summary>
@@ -173,10 +173,34 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void AddInboundConnection_ValidatesArgs()
         {
             // Setup
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
             
             // Execute/Verify
             neuron.AddInboundConnection(null);
+        }
+
+        /// <summary>
+        /// Method:         AddInboundConnection
+        /// Requirement:    Will not add duplicates
+        /// </summary>
+        [Test]
+        public void AddInboundConnection_WillNotAddDuplicates()
+        {
+            // Setup
+            var mockConnection1 = new Mock<INeuralConnection>();
+            var mockConnection2 = new Mock<INeuralConnection>();
+
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
+            
+            // Execute
+            neuron.AddInboundConnection(mockConnection1.Object);
+            neuron.AddInboundConnection(mockConnection2.Object);
+            neuron.AddInboundConnection(mockConnection1.Object);
+
+            // Verify
+            Assert.AreEqual(2, neuron.InboundConnections.Count);
+            Assert.IsTrue(neuron.InboundConnections.Contains(mockConnection1.Object));
+            Assert.IsTrue(neuron.InboundConnections.Contains(mockConnection2.Object));
         }
 
         /// <summary>
@@ -189,10 +213,34 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void AddOutboundConnection_ValidatesArgs()
         {
             // Setup
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
 
             // Execute/Verify
             neuron.AddOutboundConnection(null);
+        }
+
+        /// <summary>
+        /// Method:         AddOutboundConnection
+        /// Requirement:    Will not add duplicates
+        /// </summary>
+        [Test]
+        public void AddOutboundConnection_WillNotAddDuplicates()
+        {
+            // Setup
+            var mockConnection1 = new Mock<INeuralConnection>();
+            var mockConnection2 = new Mock<INeuralConnection>();
+
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
+
+            // Execute
+            neuron.AddOutboundConnection(mockConnection1.Object);
+            neuron.AddOutboundConnection(mockConnection2.Object);
+            neuron.AddOutboundConnection(mockConnection1.Object);
+
+            // Verify
+            Assert.AreEqual(2, neuron.OutboundConnections.Count);
+            Assert.IsTrue(neuron.OutboundConnections.Contains(mockConnection1.Object));
+            Assert.IsTrue(neuron.OutboundConnections.Contains(mockConnection2.Object));
         }
 
         /// <summary>
@@ -227,12 +275,11 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockFunction.Setup(mock => mock.Invoke(BiasPlusInputs)).Returns(Output);
 
             // Create the test object.
-            var neuron = new Neuron(mockFunction.Object);
+            var neuron = new Neuron(Bias, mockFunction.Object);
             neuron.AddInboundConnection(mockInboundFired.Object);
             neuron.AddInboundConnection(mockInboundUnfired.Object);
             neuron.AddOutboundConnection(mockOutbound1.Object);
             neuron.AddOutboundConnection(mockOutbound2.Object);
-            neuron.Bias = Bias;
 
             // EXECUTION #1
 
@@ -267,7 +314,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockOutbound2.Verify(mock => mock.Fire(Output), Times.Once());
             mockInboundFired.Verify(mock => mock.ClearFire(), Times.Once());
             mockInboundUnfired.Verify(mock => mock.ClearFire(), Times.Once());
-            Assert.AreEqual(neuron.CachedOutputs[0], Output);
+            Assert.AreEqual(Output, neuron.CachedOutputs[0]);
         }
 
         /// <summary>
@@ -298,12 +345,11 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockFunction.Setup(mock => mock.Invoke(BiasPlusInputs)).Returns(Output);
 
             // Create the test object.
-            var neuron = new Neuron(mockFunction.Object);
+            var neuron = new Neuron(Bias, mockFunction.Object);
             neuron.AddInboundConnection(mockInbound1.Object);
             neuron.AddInboundConnection(mockInbound2.Object);
             neuron.AddOutboundConnection(mockOutbound1.Object);
             neuron.AddOutboundConnection(mockOutbound2.Object);
-            neuron.Bias = Bias;
 
             // EXECUTION
 
@@ -321,7 +367,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockFunction.Verify(mock => mock.Invoke(BiasPlusInputs), Times.Once());
             mockOutbound1.Verify(mock => mock.Fire(Output), Times.Once());
             mockOutbound2.Verify(mock => mock.Fire(Output), Times.Once());
-            Assert.AreEqual(neuron.CachedOutputs[0], Output);
+            Assert.AreEqual(Output, neuron.CachedOutputs[0]);
         }
 
         /// <summary>
@@ -334,7 +380,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void FireArray_ValidatesNullArgs()
         {
             // Setup
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
 
             // Execute/Verify
             neuron.Fire(null);
@@ -350,7 +396,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         public void FireArray_ValidatesEmptyArray()
         {
             // Setup
-            var neuron = new Neuron(new Mock<IActivationFunction>().Object);
+            var neuron = new Neuron(0.0d, new Mock<IActivationFunction>().Object);
 
             // Execute/Verify
             neuron.Fire(new double[0]);

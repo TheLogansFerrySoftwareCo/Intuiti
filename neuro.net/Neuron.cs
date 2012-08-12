@@ -40,17 +40,6 @@ namespace LogansFerry.NeuroDotNet
         private const string ClassName = "Neuron";
 
         /// <summary>
-        /// The random number utility that will be used to generate weights.
-        /// </summary>
-        /// <remarks>
-        /// This is a static member so that it is only seeded once, thus ensuring a different
-        /// number for each assignment.  Otherwise, connection objects that are instantiated
-        /// too quickly in sequence would receive the same time-based seed value, which would
-        /// result in them having the same "random" weight assignment.
-        /// </remarks>
-        private static readonly Random Randomizer = new Random();
-
-        /// <summary>
         /// The next ID number that will be assigned to an object of this class.
         /// </summary>
         private static long nextId;
@@ -96,8 +85,9 @@ namespace LogansFerry.NeuroDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="Neuron"/> class.
         /// </summary>
+        /// <param name="initialBias">The initial bias value.</param>
         /// <param name="activationFunction">The activation function.</param>
-        public Neuron(IActivationFunction activationFunction)
+        public Neuron(double initialBias, IActivationFunction activationFunction)
         {
             // Initialize the class name for loggin purposes.
             this.Id = nextId++;
@@ -110,12 +100,11 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("activationFunction");
             }
 
+            this.bias = initialBias;
             this.activationFunction = activationFunction;
             
             this.inboundConnections = new List<INeuralConnection>();
             this.outboundConnections = new List<INeuralConnection>();
-
-            this.InitializeBias();
 
             // Initialize the single-element array for the cached output value.
             // This value is stored in an array solely to satisfy its interface requirements.
@@ -174,6 +163,28 @@ namespace LogansFerry.NeuroDotNet
             get
             {
                 return this.name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the node's inbound connections.
+        /// </summary>
+        public IList<INeuralConnection> InboundConnections
+        {
+            get
+            {
+                return this.inboundConnections;
+            }
+        }
+
+        /// <summary>
+        /// Gets the node's outbound connections.
+        /// </summary>
+        public IList<INeuralConnection> OutboundConnections
+        {
+            get
+            {
+                return this.outboundConnections;
             }
         }
 
@@ -239,7 +250,10 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("inboundConnection");
             }
 
-            this.inboundConnections.Add(inboundConnection);
+            if (!this.inboundConnections.Contains(inboundConnection))
+            {
+                this.inboundConnections.Add(inboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -258,7 +272,10 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("outboundConnection");
             }
 
-            this.outboundConnections.Add(outboundConnection);
+            if (!this.outboundConnections.Contains(outboundConnection))
+            {
+                this.outboundConnections.Add(outboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -366,23 +383,6 @@ namespace LogansFerry.NeuroDotNet
             {
                 connection.Fire(output);
             }
-
-            Logger.TraceOut(this.name, MethodName);
-        }
-
-        /// <summary>
-        /// Initializes the bias by randomly assigning a value.
-        /// </summary>
-        private void InitializeBias()
-        {
-            const string MethodName = "Activate";
-            Logger.TraceIn(this.name, MethodName);
-
-            // Bias values will initialize between -1 and 1.
-            const double Max = 1.0d;
-            const double Min = -1.0d;
-
-            this.bias = (Randomizer.NextDouble() * (Max - Min)) + Min;
 
             Logger.TraceOut(this.name, MethodName);
         }

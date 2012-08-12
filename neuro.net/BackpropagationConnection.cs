@@ -178,15 +178,15 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
-        /// Clears the temporary training values.
+        /// Clears the cached error values.
         /// </summary>
-        public void ClearTempTrainingValues()
+        public void ClearCachedErrors()
         {
-            const string MethodName = "ClearTempTrainingValues";
+            const string MethodName = "ClearCachedErrors";
             Logger.TraceIn(this.name, MethodName);
 
             // Propagate the command.
-            this.TargetNode.ClearTempTrainingValues();
+            this.TargetNode.ClearCachedErrors();
 
             Logger.TraceOut(this.name, MethodName);
         }

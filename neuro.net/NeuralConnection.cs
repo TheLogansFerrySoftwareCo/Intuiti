@@ -137,7 +137,7 @@ namespace LogansFerry.NeuroDotNet
         /// <value>
         /// The weight value.
         /// </value>
-        public double Weight { get; protected set; }
+        public double Weight { get; set; }
 
         /// <summary>
         /// Gets the cached input, which is the value that was provided by the source node the last time that it fired.

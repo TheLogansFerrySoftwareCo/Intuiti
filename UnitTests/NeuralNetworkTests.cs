@@ -131,6 +131,30 @@ namespace LogansFerry.NeuroDotNet.UnitTests
         }
 
         /// <summary>
+        /// Method:         AddInboundConnection
+        /// Requirement:    Will not add duplicates
+        /// </summary>
+        [Test]
+        public void AddInboundConnection_WillNotAddDuplicates()
+        {
+            // Setup
+            var mockConnection1 = new Mock<INeuralConnection>();
+            var mockConnection2 = new Mock<INeuralConnection>();
+
+            var network = new NeuralNetwork();
+
+            // Execute
+            network.AddInboundConnection(mockConnection1.Object);
+            network.AddInboundConnection(mockConnection2.Object);
+            network.AddInboundConnection(mockConnection1.Object);
+
+            // Verify
+            Assert.AreEqual(2, network.InboundConnections.Count);
+            Assert.IsTrue(network.InboundConnections.Contains(mockConnection1.Object));
+            Assert.IsTrue(network.InboundConnections.Contains(mockConnection2.Object));
+        }
+
+        /// <summary>
         /// Method:         AddOutboundConnection
         /// Requirement:    The method will throw a Null Argument Exception when a null is provided.
         /// </summary>
@@ -143,6 +167,108 @@ namespace LogansFerry.NeuroDotNet.UnitTests
 
             // Execute/Verify
             network.AddOutboundConnection(null);
+        }
+
+        /// <summary>
+        /// Method:         AddOutboundConnection
+        /// Requirement:    Will not add duplicates
+        /// </summary>
+        [Test]
+        public void AddOutboundConnection_WillNotAddDuplicates()
+        {
+            // Setup
+            var mockConnection1 = new Mock<INeuralConnection>();
+            var mockConnection2 = new Mock<INeuralConnection>();
+
+            var network = new NeuralNetwork();
+
+            // Execute
+            network.AddOutboundConnection(mockConnection1.Object);
+            network.AddOutboundConnection(mockConnection2.Object);
+            network.AddOutboundConnection(mockConnection1.Object);
+
+            // Verify
+            Assert.AreEqual(2, network.OutboundConnections.Count);
+            Assert.IsTrue(network.OutboundConnections.Contains(mockConnection1.Object));
+            Assert.IsTrue(network.OutboundConnections.Contains(mockConnection2.Object));
+        }
+
+        /// <summary>
+        /// Method:         AddInputNode
+        /// Requirement:    The method will throw a Null Argument Exception when a null is provided.
+        /// </summary>
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddInputNode_ValidatesArgs()
+        {
+            // Setup
+            var network = new NeuralNetwork();
+
+            // Execute/Verify
+            network.AddInputNode(null);
+        }
+
+        /// <summary>
+        /// Method:         AddInputNode
+        /// Requirement:    Will not add duplicates
+        /// </summary>
+        [Test]
+        public void AddInputNode_WillNotAddDuplicates()
+        {
+            // Setup
+            var mockNode1 = new Mock<INeuralNode>();
+            var mockNode2 = new Mock<INeuralNode>();
+
+            var network = new NeuralNetwork();
+
+            // Execute
+            network.AddInputNode(mockNode1.Object);
+            network.AddInputNode(mockNode2.Object);
+            network.AddInputNode(mockNode1.Object);
+
+            // Verify
+            Assert.AreEqual(2, network.InputNodes.Count);
+            Assert.IsTrue(network.InputNodes.Contains(mockNode1.Object));
+            Assert.IsTrue(network.InputNodes.Contains(mockNode2.Object));
+        }
+
+        /// <summary>
+        /// Method:         AddOutputNode
+        /// Requirement:    The method will throw a Null Argument Exception when a null is provided.
+        /// </summary>
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddOutputNode_ValidatesArgs()
+        {
+            // Setup
+            var network = new NeuralNetwork();
+
+            // Execute/Verify
+            network.AddOutputNode(null);
+        }
+
+        /// <summary>
+        /// Method:         AddOutputNode
+        /// Requirement:    Will not add duplicates
+        /// </summary>
+        [Test]
+        public void AddOutputNode_WillNotAddDuplicates()
+        {
+            // Setup
+            var mockNode1 = new Mock<INeuralNode>();
+            var mockNode2 = new Mock<INeuralNode>();
+
+            var network = new NeuralNetwork();
+
+            // Execute
+            network.AddOutputNode(mockNode1.Object);
+            network.AddOutputNode(mockNode2.Object);
+            network.AddOutputNode(mockNode1.Object);
+
+            // Verify
+            Assert.AreEqual(2, network.OutputNodes.Count);
+            Assert.IsTrue(network.OutputNodes.Contains(mockNode1.Object));
+            Assert.IsTrue(network.OutputNodes.Contains(mockNode2.Object));
         }
 
         /// <summary>
@@ -160,7 +286,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             var mockOutputNode1 = new Mock<INeuralNode>();
             var mockOutputNode2 = new Mock<INeuralNode>();
 
-            // Create 2 inbound and 1 outbound mock connections.
+            // Create 2 inbound and 2 outbound mock connections.
             var mockInboundFired = new Mock<INeuralConnection>();
             var mockInboundUnfired = new Mock<INeuralConnection>();
             var mockOutbound1 = new Mock<INeuralConnection>();
@@ -594,7 +720,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
 
             //// VERIFY
             
-            Assert.AreEqual(actual, expected);
+            Assert.AreEqual(expected, actual);
             Assert.AreEqual(expected, network.CachedOutputs);
             mockInputNode1.Verify(mock => mock.Fire(new[] { Input1 }));
             mockInputNode2.Verify(mock => mock.Fire(new[] { Input2, Input3 }));

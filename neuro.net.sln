@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo_1_XOr", "Demo_1_XOr\Demo_1_XOr.csproj", "{BC99E396-1EF6-4AC7-90D7-EF5B0F06C929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo_2_CompoundLogic", "Demo_2_ComplexLogic\Demo_2_CompoundLogic.csproj", "{A811E02C-A0F2-4BA5-A939-B4349ACE2E65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo_2_CompoundLogic", "Demo_2_CompoundLogic\Demo_2_CompoundLogic.csproj", "{A811E02C-A0F2-4BA5-A939-B4349ACE2E65}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "neuro.net", "neuro.net\neuro.net.csproj", "{E7956E73-DBFD-4799-9B28-CAD3452457C9}"
 EndProject

@@ -20,11 +20,23 @@
 
 namespace LogansFerry.NeuroDotNet
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// A neural network containing connected neural nodes.
     /// </summary>
     public interface INeuralNetwork : INeuralNode
     {
+        /// <summary>
+        /// Gets the network's input nodes.
+        /// </summary>
+        IList<INeuralNode> InputNodes { get; }
+
+        /// <summary>
+        /// Gets the network's output nodes.
+        /// </summary>
+        IList<INeuralNode> OutputNodes { get; } 
+
         /// <summary>
         /// Computes output values from the provided input values.
         /// </summary>

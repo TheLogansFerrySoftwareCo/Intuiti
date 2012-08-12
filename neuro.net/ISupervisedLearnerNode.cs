@@ -56,8 +56,8 @@ namespace LogansFerry.NeuroDotNet
         void ApplyWeightAdjustments(float learningRate, float momentum);
 
         /// <summary>
-        /// Clear the temporary training values between input sets.
+        /// Clears the cached error values.
         /// </summary>
-        void ClearTempTrainingValues();
+        void ClearCachedErrors();
     }
 }

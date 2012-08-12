@@ -99,7 +99,11 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddInboundConnection";
             Logger.TraceIn(this.name, MethodName);
 
-            this.inboundConnections.Add(inboundConnection);
+            if (!this.inboundConnections.Contains(inboundConnection))
+            {
+                this.inboundConnections.Add(inboundConnection);
+                base.AddInboundConnection(inboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -113,7 +117,11 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddOutboundConnection";
             Logger.TraceIn(this.name, MethodName);
 
-            this.outboundConnections.Add(outboundConnection);
+            if (!this.outboundConnections.Contains(outboundConnection))
+            {
+                this.outboundConnections.Add(outboundConnection);
+                base.AddOutboundConnection(outboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -186,23 +194,23 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
-        /// Clear the temporary training values between input sets.
+        /// Clears the cached error values.
         /// </summary>
-        public void ClearTempTrainingValues()
+        public void ClearCachedErrors()
         {
-            const string MethodName = "ClearTempTrainingValues";
+            const string MethodName = "ClearCachedErrors";
             Logger.TraceIn(this.name, MethodName);
 
             // First, clear the temp values through this network by signaling to the input nodes.
             foreach (var inputNode in this.inputNodes)
             {
-                inputNode.ClearTempTrainingValues();
+                inputNode.ClearCachedErrors();
             }
 
             // Next, continue the command to clear the temps in the larger network by signaling the outbound connections.
             foreach (var connection in this.outboundConnections)
             {
-                connection.ClearTempTrainingValues();
+                connection.ClearCachedErrors();
             }
 
             Logger.TraceOut(this.name, MethodName);
@@ -218,8 +226,11 @@ namespace LogansFerry.NeuroDotNet
             Logger.TraceIn(this.name, MethodName);
 
             // Add the node to this class and the base class.
-            this.inputNodes.Add(node);
-            base.AddInputNode(node);
+            if (!this.inputNodes.Contains(node))
+            {
+                this.inputNodes.Add(node);
+                base.AddInputNode(node);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -234,8 +245,11 @@ namespace LogansFerry.NeuroDotNet
             Logger.TraceIn(this.name, MethodName);
 
             // Add the node to this class and the base class.
-            this.outputNodes.Add(node);
-            base.AddOutputNode(node);
+            if (!this.outputNodes.Contains(node))
+            {
+                this.outputNodes.Add(node);
+                base.AddOutputNode(node); 
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -281,8 +295,8 @@ namespace LogansFerry.NeuroDotNet
                     // Backpropagate the calculated error signals through the network.
                     this.BackpropagateErrorSignals(errorSignals);
 
-                    // Clear the temporary training values (ex: cached errors) before the next iteration.
-                    this.ClearTempTrainingValues();
+                    // Clear the cached errors before the next iteration.
+                    this.ClearCachedErrors();
                 }
 
                 // Apply all pending weight adjustments at the end of each epoch.

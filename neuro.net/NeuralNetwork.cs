@@ -137,6 +137,50 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
+        /// Gets the node's inbound connections.
+        /// </summary>
+        public IList<INeuralConnection> InboundConnections
+        {
+            get
+            {
+                return this.inboundConnections;
+            }
+        }
+
+        /// <summary>
+        /// Gets the node's outbound connections.
+        /// </summary>
+        public IList<INeuralConnection> OutboundConnections
+        {
+            get
+            {
+                return this.outboundConnections;
+            }
+        }
+
+        /// <summary>
+        /// Gets the network's input nodes.
+        /// </summary>
+        public IList<INeuralNode> InputNodes
+        {
+            get
+            {
+                return this.inputNodes;
+            }
+        }
+
+        /// <summary>
+        /// Gets the network's output nodes.
+        /// </summary>
+        public IList<INeuralNode> OutputNodes
+        {
+            get
+            {
+                return this.outputNodes;
+            }
+        }
+
+        /// <summary>
         /// Adds an inbound connection from another node (either another network or a neuron) in the outer network.
         /// </summary>
         /// <param name="inboundConnection">The inbound connection to add.</param>
@@ -150,7 +194,10 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("inboundConnection");
             }
 
-            this.inboundConnections.Add(inboundConnection);
+            if (!this.inboundConnections.Contains(inboundConnection))
+            {
+                this.inboundConnections.Add(inboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -169,7 +216,10 @@ namespace LogansFerry.NeuroDotNet
                 throw new ArgumentNullException("outboundConnection");
             }
 
-            this.outboundConnections.Add(outboundConnection);
+            if (!this.outboundConnections.Contains(outboundConnection))
+            {
+                this.outboundConnections.Add(outboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -322,7 +372,15 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddInputNode";
             Logger.TraceIn(this.name, MethodName);
 
-            this.inputNodes.Add(node);
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+
+            if (!this.inputNodes.Contains(node))
+            {
+                this.inputNodes.Add(node);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -336,7 +394,15 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddOutputNode";
             Logger.TraceIn(this.name, MethodName);
 
-            this.outputNodes.Add(node);
+            if (node == null)
+            {
+                throw new ArgumentNullException("node");
+            }
+
+            if (!this.outputNodes.Contains(node))
+            {
+                this.outputNodes.Add(node);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }

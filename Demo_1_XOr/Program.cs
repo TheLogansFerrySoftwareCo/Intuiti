@@ -127,20 +127,20 @@ namespace Demo_1_XOr
             var sigmoidFunction = new HyperbolicTangentFunction();
             
             // INPUT LAYER:  Create an input layer with two neurons.
-            var inputNeuron1 = new BackpropagationNeuron(linearFunction);
-            var inputNeuron2 = new BackpropagationNeuron(linearFunction);
+            var inputNeuron1 = new BackpropagationNeuron(GetNextRandomWeight(), linearFunction);
+            var inputNeuron2 = new BackpropagationNeuron(GetNextRandomWeight(), linearFunction);
             network.AddInputNode(inputNeuron1);
             network.AddInputNode(inputNeuron2);
 
             // OUTPUT LAYER:  Create an ouput layer with one neuron.
-            var outputNeuron = new BackpropagationNeuron(sigmoidFunction);
+            var outputNeuron = new BackpropagationNeuron(GetNextRandomWeight(), sigmoidFunction);
             network.AddOutputNode(outputNeuron);
 
             // HIDDEN LAYER:  Create a hidden layer with three neurons.
             // (Note that the hidden layer isn't defined explicitly like the output and input layers.)
-            var hiddenNeuron1 = new BackpropagationNeuron(sigmoidFunction);
-            var hiddenNeuron2 = new BackpropagationNeuron(sigmoidFunction);
-            var hiddenNeuron3 = new BackpropagationNeuron(sigmoidFunction);
+            var hiddenNeuron1 = new BackpropagationNeuron(GetNextRandomWeight(), sigmoidFunction);
+            var hiddenNeuron2 = new BackpropagationNeuron(GetNextRandomWeight(), sigmoidFunction);
+            var hiddenNeuron3 = new BackpropagationNeuron(GetNextRandomWeight(), sigmoidFunction);
 
             // So far, the network isn't usable, because no nodes are ever connected by default.
             

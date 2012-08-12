@@ -20,6 +20,7 @@
 
 namespace LogansFerry.NeuroDotNet
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -69,11 +70,12 @@ namespace LogansFerry.NeuroDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="BackpropagationNeuron"/> class.
         /// </summary>
+        /// <param name="initialBias">The initial bias value.</param>
         /// <param name="activationFunction">The activation function.</param>
-        public BackpropagationNeuron(IActivationFunction activationFunction)
-            : base(activationFunction)
+        public BackpropagationNeuron(double initialBias, IActivationFunction activationFunction)
+            : base(initialBias, activationFunction)
         {
-            // Initialize the class name for loggin purposes.
+            // Initialize the class name for logging purposes.
             this.name = ClassName + "_" + this.Id;
             const string MethodName = "Ctor";
             Logger.TraceIn(this.name, MethodName);
@@ -108,7 +110,16 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddInboundConnection";
             Logger.TraceIn(this.name, MethodName);
 
-            this.inboundConnections.Add(inboundConnection);
+            if (inboundConnection == null)
+            {
+                throw new ArgumentNullException("inboundConnection");
+            }
+
+            if (!this.inboundConnections.Contains(inboundConnection))
+            {
+                this.inboundConnections.Add(inboundConnection);
+                base.AddInboundConnection(inboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -122,7 +133,16 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "AddOutboundConnection";
             Logger.TraceIn(this.name, MethodName);
 
-            this.outboundConnections.Add(outboundConnection);
+            if (outboundConnection == null)
+            {
+                throw new ArgumentNullException("outboundConnection");
+            }
+
+            if (!this.outboundConnections.Contains(outboundConnection))
+            {
+                this.outboundConnections.Add(outboundConnection);
+                base.AddOutboundConnection(outboundConnection);
+            }
 
             Logger.TraceOut(this.name, MethodName);
         }
@@ -150,6 +170,11 @@ namespace LogansFerry.NeuroDotNet
             if (this.outboundConnections.All(connection => connection.IsReportingError))
             {
                 this.CalculateError();
+
+                foreach (var connection in this.outboundConnections)
+                {
+                    connection.ClearReportingFlag();
+                }
             }
             else
             {
@@ -179,7 +204,8 @@ namespace LogansFerry.NeuroDotNet
             Logger.Debug(this.name, MethodName, "New Bias", this.Bias);
 
             this.previousBiasAdjustment = biasAdjustment;
-
+            this.pendingBiasAdjustment = 0.0d;
+            
             // Propagate command by notifying outbound connections.
             foreach (var connection in this.outboundConnections)
             {
@@ -190,20 +216,19 @@ namespace LogansFerry.NeuroDotNet
         }
 
         /// <summary>
-        /// Clear the temporary training values between input sets.
+        /// Clears the cached error values.
         /// </summary>
-        public void ClearTempTrainingValues()
+        public void ClearCachedErrors()
         {
-            const string MethodName = "ClearTempTrainingValues";
+            const string MethodName = "ClearCachedErrors";
             Logger.TraceIn(this.name, MethodName);
 
-            this.pendingBiasAdjustment = 0.0d;
             this.cachedError[0] = 0.0d;
 
             // Propagate command by notifying outbound connections.
             foreach (var connection in this.outboundConnections)
             {
-                connection.ClearTempTrainingValues();
+                connection.ClearCachedErrors();
             }
 
             Logger.TraceOut(this.name, MethodName);

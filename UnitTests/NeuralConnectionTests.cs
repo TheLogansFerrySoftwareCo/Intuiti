@@ -50,9 +50,9 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             mockSource.Verify(mock => mock.AddOutboundConnection(actual), Times.Once());
             mockTarget.Verify(mock => mock.AddInboundConnection(actual), Times.Once());
 
-            Assert.AreEqual(actual.Weight, ExpectedWeight);
-            Assert.AreSame(actual.SourceNode, mockSource.Object);
-            Assert.AreSame(actual.TargetNode, mockTarget.Object);
+            Assert.AreEqual(ExpectedWeight, actual.Weight);
+            Assert.AreSame(mockSource.Object, actual.SourceNode);
+            Assert.AreSame(mockTarget.Object, actual.TargetNode);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace LogansFerry.NeuroDotNet.UnitTests
             connection.Fire(Expected);
 
             // Verify
-            Assert.AreEqual(connection.CachedInput, Expected);
+            Assert.AreEqual(Expected, connection.CachedInput);
         }
 
         /// <summary>

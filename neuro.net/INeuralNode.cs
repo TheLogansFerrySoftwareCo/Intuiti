@@ -20,6 +20,8 @@
 
 namespace LogansFerry.NeuroDotNet
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// A node within a neural network.  A node may be a neuron or a subnetwork.
     /// </summary>
@@ -50,6 +52,16 @@ namespace LogansFerry.NeuroDotNet
         /// Gets the node's name (for logging purposes).
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Gets the node's inbound connections.
+        /// </summary>
+        IList<INeuralConnection> InboundConnections { get; }
+
+        /// <summary>
+        /// Gets the node's outbound connections.
+        /// </summary>
+        IList<INeuralConnection> OutboundConnections { get; } 
 
         /// <summary>
         /// Adds an inbound connection from another node (either another network or a neuron) in the outer network.

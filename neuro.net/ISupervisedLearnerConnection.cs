@@ -57,8 +57,8 @@ namespace LogansFerry.NeuroDotNet
         void ClearReportingFlag();
 
         /// <summary>
-        /// Clears the temporary training values.
+        /// Clears the cached error values.
         /// </summary>
-        void ClearTempTrainingValues();
+        void ClearCachedErrors();
     }
 }
