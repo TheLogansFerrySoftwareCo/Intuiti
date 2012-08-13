@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackpropagationNeuronTests.cs" />
+    <Compile Include="BackpropagationNetworkTests.cs" />
     <Compile Include="HyperbolicTangentTests.cs" />
     <Compile Include="LinearActivationTests.cs" />
     <Compile Include="NeuralConnectionTests.cs" />

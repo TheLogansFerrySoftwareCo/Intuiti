@@ -475,6 +475,7 @@ namespace LogansFerry.NeuroDotNet
             var valueIndex = 0;
 
             var ratio = values.Count / numAggregations;
+            var excess = values.Count % numAggregations;
 
             for (var aggregatedIndex = 0; aggregatedIndex < numAggregations; aggregatedIndex++)
             {
@@ -483,11 +484,12 @@ namespace LogansFerry.NeuroDotNet
                 {
                     sum += values[valueIndex];
                     valueIndex++;
+                }
 
-                    if (valueIndex >= values.Count)
-                    {
-                        valueIndex = 0;
-                    }
+                if (aggregatedIndex < excess)
+                {
+                    sum += values[valueIndex];
+                    valueIndex++;
                 }
 
                 aggregatedValues[aggregatedIndex] = sum;
@@ -595,19 +597,22 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "FireOutputs";
             Logger.TraceIn(this.name, MethodName);
 
-            if (this.outboundConnections.Count % this.CachedOutputs.Length != 0)
-            {
-                throw new InvalidOperationException("An uneven ratio exists between this network's outbound connections and output size.");
-            }
-
             var outputRatio = this.outboundConnections.Count / this.CachedOutputs.Length;
+            var ratioExcess = this.outboundConnections.Count % this.CachedOutputs.Length;
+
             var connectionIndex = 0;
             var digitizedOutputs = this.DigitizeValues(this.CachedOutputs);  // Digitize the output signals for clarity.
-            foreach (var digitizedOutput in digitizedOutputs)
+            for (var outputIndex = 0; outputIndex < digitizedOutputs.Length; outputIndex++)
             {
                 for (var counter = 0; counter < outputRatio; counter++)
                 {
-                    this.outboundConnections[connectionIndex].Fire(digitizedOutput);
+                    this.outboundConnections[connectionIndex].Fire(digitizedOutputs[outputIndex]);
+                    connectionIndex++;
+                }
+
+                if (outputIndex < ratioExcess)
+                {
+                    this.outboundConnections[connectionIndex].Fire(digitizedOutputs[outputIndex]);
                     connectionIndex++;
                 }
             }

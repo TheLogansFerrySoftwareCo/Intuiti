@@ -418,13 +418,21 @@ namespace LogansFerry.NeuroDotNet
             const string MethodName = "ReportErrorsToInboundConnections";
             Logger.TraceIn(this.name, MethodName);
 
-            var inputRatio = this.inboundConnections.Count % this.CachedErrors.Length;
+            var inputRatio = this.inboundConnections.Count / this.CachedErrors.Length;
+            var inputExcess = this.inboundConnections.Count % this.CachedErrors.Length;
+
             var connectionIndex = 0;
-            foreach (var resultingError in this.CachedErrors)
+            for (var errorIndex = 0; errorIndex < this.CachedErrors.Length; errorIndex++)
             {
                 for (var counter = 0; counter < inputRatio; counter++)
                 {
-                    this.inboundConnections[connectionIndex].ReportError(resultingError);
+                    this.inboundConnections[connectionIndex].ReportError(this.CachedErrors[errorIndex]);
+                    connectionIndex++;
+                }
+
+                if (errorIndex < inputExcess)
+                {
+                    this.inboundConnections[connectionIndex].ReportError(this.CachedErrors[errorIndex]);
                     connectionIndex++;
                 }
             }
