@@ -9,8 +9,8 @@
     <ProjectGuid>{EE8BD706-992D-446A-BCCE-724DB56238F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LogansFerry.NeuroDotNet.UnitTests</RootNamespace>
-    <AssemblyName>neuro.net.UnitTests</AssemblyName>
+    <RootNamespace>LogansFerry.Intuiti.UnitTests</RootNamespace>
+    <AssemblyName>Intuiti.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -75,9 +75,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\neuro.net\neuro.net.csproj">
+    <ProjectReference Include="..\neuro.net\Intuiti.csproj">
       <Project>{E7956E73-DBFD-4799-9B28-CAD3452457C9}</Project>
-      <Name>neuro.net</Name>
+      <Name>Intuiti</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

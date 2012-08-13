@@ -61,9 +61,9 @@
     <Content Include="ExternalReferences\log4net\log4net.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\neuro.net\neuro.net.csproj">
+    <ProjectReference Include="..\neuro.net\Intuiti.csproj">
       <Project>{E7956E73-DBFD-4799-9B28-CAD3452457C9}</Project>
-      <Name>neuro.net</Name>
+      <Name>Intuiti</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

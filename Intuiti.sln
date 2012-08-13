@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo_1_XOr", "Demo_1_XOr\De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo_2_CompoundLogic", "Demo_2_CompoundLogic\Demo_2_CompoundLogic.csproj", "{A811E02C-A0F2-4BA5-A939-B4349ACE2E65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "neuro.net", "neuro.net\neuro.net.csproj", "{E7956E73-DBFD-4799-9B28-CAD3452457C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intuiti", "Intuiti\Intuiti.csproj", "{E7956E73-DBFD-4799-9B28-CAD3452457C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{EE8BD706-992D-446A-BCCE-724DB56238F8}"
 EndProject

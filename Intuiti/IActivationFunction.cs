@@ -1,33 +1,30 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LinearActivationFunction.cs" company="The Logans Ferry Software Co.">
+// <copyright file="IActivationFunction.cs" company="The Logans Ferry Software Co.">
 //   Copyright 2012, The Logans Ferry Software Co. 
 // </copyright>
 // <license>  
-//   This file is part of neuro.net.
+//   This file is part of Intuiti.
 //   
-//   neuro.net is free software: you can redistribute it and/or modify it under the terms
+//   Intuiti is free software: you can redistribute it and/or modify it under the terms
 //   of the GNU General Public License as published by the Free Software Foundation, either
 //   version 3 of the License, or (at your option) any later version.
 //   
-//   neuro.net is distributed in the hope that it will be useful, but WITHOUT ANY
+//   Intuiti is distributed in the hope that it will be useful, but WITHOUT ANY
 //   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
 //   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //   
 //   You should have received a copy of the GNU General Public License along with
-//   neuro.net. If not, see http://www.gnu.org/licenses/.
+//   Intuiti. If not, see http://www.gnu.org/licenses/.
 // </license>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace LogansFerry.NeuroDotNet
+namespace LogansFerry.Intuiti
 {
     /// <summary>
-    /// An activation function with a linear output graph.
+    /// Provides a function for determining the activation value of a neuron, 
+    /// as well as the derivative of the function for use in backpropagation.
     /// </summary>
-    /// <remarks>
-    /// This function is used in situations where inputs should pass through a neuron un-modified,
-    /// such as in Input Layer neurons.
-    /// </remarks>
-    public class LinearActivationFunction : IActivationFunction
+    public interface IActivationFunction
     {
         /// <summary>
         /// Invokes the activation function on the provided input.
@@ -36,22 +33,15 @@ namespace LogansFerry.NeuroDotNet
         /// <returns>
         /// The output value from the function.
         /// </returns>
-        public double Invoke(double input)
-        {
-            return input;
-        }
+        double Invoke(double input);
 
         /// <summary>
         /// Invokes the derivative function of the activation function on the provided input.
         /// </summary>
         /// <param name="input">The input to the derivative function.</param>
         /// <returns>
-        /// The output value from the function.
+        /// The output value from the derivative function.
         /// </returns>
-        public double InvokeDerivative(double input)
-        {
-            // The linear function has no derivative.
-            return 1;
-        }
+        double InvokeDerivative(double input);
     }
 }
