@@ -1,17 +1,18 @@
-﻿READ ME for neuro.net
--------------------------------
+﻿INTUITI - A Software Intuition Engine
 
-neuro.net is a framework for integrating the power of neural networking into .NET applications.
+What is Intuiti?
+-------------------------------
+Intuiti is a framework for integrating the power of machine learning into .NET applications.  The framework is still in it's infancy, but as it matures, it will begin to provide developers with "Intuition Engines" with simplistic APIs for advanced machine-learning data analysis.
 
 
 GOAL
 ----------
-The goal of this project is to create a framework that enables .NET developers to integrate artificial neural networks into their applications without requiring a knowledge of how neural networks operate.
+The goal of this project is to create a framework that enables .NET developers to easily integrate powerful machine learning algorithms into their everyday applications.
 
 
 LICENSE
 ----------
-This project is licensed under the GPL version 3.
+Intuiti is licensed under the GPL version 3.
 
 
 CREDITS
